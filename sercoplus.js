@@ -9,7 +9,7 @@ import fs from "fs"
         userDataDir: "./tmp",
     });
     const page = await browser.newPage();
-    var producto = 'gtx 1650'
+    var producto = 'silla gaming'
     producto=producto.trim().toLowerCase()
     let buscar = producto.replace(/\s/g, '+')
     console.log(producto)

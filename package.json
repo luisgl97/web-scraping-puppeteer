@@ -10,7 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "chart.js": "^4.1.1",
+    "cluster": "^0.7.7",
     "fast-csv": "^4.3.6",
+    "os": "^0.1.2",
     "puppeteer": "^19.4.1",
     "puppeteer-cluster": "^0.23.0"
   },
