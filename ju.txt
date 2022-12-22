@@ -1,0 +1,36 @@
+const puppeteer = require('puppeteer');
+
+async function scrapeSite1() {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto('httpswww.site1.com');
+   Realiza el web scraping de la página de site1.com aquí
+  await browser.close();
+}
+
+async function scrapeSite2() {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto('httpswww.site2.com');
+   Realiza el web scraping de la página de site2.com aquí
+  await browser.close();
+}
+
+async function main() {
+  const [site1Data, site2Data] = await Promise.all([
+    scrapeSite1(),
+    scrapeSite2(),
+  ]);
+   Procesa los datos de site1 y site2 aquí
+}
+
+main();
+En este ejemplo, se lanzan dos instancias de Puppeteer para realizar el web scraping de dos sitios diferentes en paralelo. Luego, la función Promise.all() se utiliza para esperar a que ambas funciones de scraping completen su ejecución y devuelvan los datos. Una vez que ambas funciones han completado su ejecución, se procesan los datos devueltos por cada una de ellas.
+
+Es importante tener en cuenta que Puppeteer es una herramienta potente, pero también puede ser costosa en términos de recursos. Asegúrate de cerrar las instancias del navegador una vez que hayas terminado de realizar el web scraping para evitar consumir innecesariamente recursos del sistema.
+
+Espero que esto te haya sido de ayuda. Si tienes alguna pregunta adicional, no dudes en preguntar.
+
+
+
+
