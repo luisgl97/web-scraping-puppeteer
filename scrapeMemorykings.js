@@ -1,17 +1,13 @@
-import puppeteer from "puppeteer";
-import csv from "fast-csv"
 import fs from "fs"
+import csv from "fast-csv"
 
-(async () => {
 
-    const browser = await puppeteer.launch({
-        headless: false,
-        defaultViewport: false,
-        userDataDir: "./tmp",
-    });
-    const page = await browser.newPage();
+export async function scrapeMemorykings(page, productoBuscar) {
+    
+    console.log("TIENDA MEMORY KINGS")
+    console.log("parameter memory kings", productoBuscar)
     let producto = 'teclado'
-    producto = producto.trim().toLowerCase()
+    producto = productoBuscar.trim().toLowerCase()
     let buscar = producto.replace(/\s/g, '%20')
     console.log(producto)
     try {
@@ -41,8 +37,8 @@ import fs from "fs"
 
 
         listaProductos = listaProductos.filter(p => p.title.toLowerCase().includes(producto))
-        console.log(listaProductos)
-        console.log(listaProductos.length)
+        /* console.log(listaProductos)
+        console.log(listaProductos.length) */
 
         const writableStream = fs.createWriteStream('products_memory_kings.csv');
 
@@ -55,7 +51,5 @@ import fs from "fs"
     } catch (error) {
         console.log(error)
     }
-    // Close the browser when the task is complete
-    await browser.close();
 
-})();
+}

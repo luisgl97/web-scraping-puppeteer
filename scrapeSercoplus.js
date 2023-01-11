@@ -1,12 +1,13 @@
 import fs from "fs"
 import csv from "fast-csv"
-import puppeteer from "puppeteer";
 
-export async function scrapeSercoplus({page}) {
+
+export async function scrapeSercoplus(page, productoBuscar) {
     
     console.log("TIENDA SERCOPLUS")
+    console.log("parameter Sercoplus", productoBuscar)
     var producto = 'teclado'
-    producto = producto.trim().toLowerCase()
+    producto = productoBuscar.trim().toLowerCase()
     let buscar = producto.replace(/\s/g, '+')
     console.log(producto)
     try {
@@ -56,8 +57,8 @@ export async function scrapeSercoplus({page}) {
         }
 
         listaProductos = listaProductos.filter(p => p.title.toLowerCase().includes(producto))
-        console.log(listaProductos)
-        console.log(listaProductos.length)
+        /* console.log(listaProductos)
+        console.log(listaProductos.length) */
 
         const writableStream = fs.createWriteStream('products_sercoplus.csv');
 
