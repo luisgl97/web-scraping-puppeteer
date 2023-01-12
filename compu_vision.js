@@ -2,6 +2,7 @@ import puppeteer from "puppeteer";
 import csv from "fast-csv"
 import fs from "fs"
 
+
 (async () => {
 
         const browser = await puppeteer.launch({
@@ -24,22 +25,27 @@ import fs from "fs"
         //await page.waitForFunction("document.querySelector('#loader-pre-prod').attributes.style.nodeValue=='display: none;", {timeout: 5000});
         await page.waitForFunction("document.querySelector('#loader-pre-prod').style.display === 'none'", {timeout: 5000});
         
-        const paginacionFinal = await page.evaluate(() => {
+        let resultados;
+
+        resultados = await page.evaluate(() => {
             console.log('ju');
             if (document.querySelector('#example > ul')) {
                 console.log('entro al if')
-                tamano_nodo = document.querySelector('#example > ul').childNodes.length
-                ultimaPagina = document.querySelector(`.pagination>li:nth-child(${tamano_nodo - 2})>a`).innerText
-                return parseInt(ultimaPagina)
+                tamanoNodo = document.querySelector('#example > ul').childNodes.length
+                ultimaPagina = document.querySelector(`.pagination>li:nth-child(${tamanoNodo - 2})>a`).innerText
+                return {tamanoNodo,ultimaPagina:parseInt(ultimaPagina)}
             }
-            return 1
+            return {tamanoNodo:1,ultimaPagina:1}
         })
 
-        console.log(paginacionFinal)
+        let paginacionFinal = resultados.ultimaPagina;
+        let tamanoNodo = resultados.tamanoNodo;
 
+        console.log(paginacionFinal)
+        console.log('tamano nodo', tamanoNodo)
         let listaProductos = []
         let siguiente = 1;
-        for (let i = 1; i <= 1; i++) {
+        for (let i = 1; i <= paginacionFinal; i++) {
             // Extract the search results
             console.log('pagina', i)
             const searchProducts = await page.evaluate(() => {
@@ -53,13 +59,19 @@ import fs from "fs"
                 });
                 return products
             });
-
+            
             listaProductos = [...listaProductos, ...searchProducts]
+       
+            if (i != paginacionFinal-1){
+                await page.click(`#example > ul > li:nth-child(${tamanoNodo}) > a`, {timeout: 3000});
+                await page.waitForFunction("document.querySelector('#example > ul > li:nth-child(2)').className === 'page-item active'", {timeout: 5000});
+            }
+
+           
             /* siguiente = siguiente + 1;
             await page.goto(`https://www.impacto.com.pe/catalogo?qsearch=${buscar}&page=${siguiente.toString()}`, {
                 waitUntil: "load"
             });
-
             // Wait for the search results to load
             await page.waitForSelector('#app-web > main > div.shop-area > div > div > div.shop-container > div.shop-container > div'); */
         }
@@ -69,7 +81,6 @@ import fs from "fs"
         console.log(listaProductos.length)
 
        /*  const writableStream = fs.createWriteStream('products_compu_vision.csv');
-
         csv.write([
             { title: 'Product Title', price: 'Price' },
             ...listaProductos
