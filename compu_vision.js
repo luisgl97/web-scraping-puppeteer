@@ -21,11 +21,13 @@ import fs from "fs"
         });
 
         // Wait for the search results to load
-        //await page.waitForSelector('#example > ul', setTimeout=4000);
-        ju = await page.waitForFunction("document.querySelector('#content_principal > div.row.shop_container.grid').childNodes.length>10")
-        console.log(ju)
+        //await page.waitForFunction("document.querySelector('#loader-pre-prod').attributes.style.nodeValue=='display: none;", {timeout: 5000});
+        await page.waitForFunction("document.querySelector('#loader-pre-prod').style.display === 'none'", {timeout: 5000});
+        
         const paginacionFinal = await page.evaluate(() => {
-            if (document.querySelector('.pagination')) {
+            console.log('ju');
+            if (document.querySelector('#example > ul')) {
+                console.log('entro al if')
                 tamano_nodo = document.querySelector('#example > ul').childNodes.length
                 ultimaPagina = document.querySelector(`.pagination>li:nth-child(${tamano_nodo - 2})>a`).innerText
                 return parseInt(ultimaPagina)
@@ -34,46 +36,45 @@ import fs from "fs"
         })
 
         console.log(paginacionFinal)
-/* 
+
         let listaProductos = []
         let siguiente = 1;
-        for (let i = 1; i <= paginacionFinal; i++) {
+        for (let i = 1; i <= 1; i++) {
             // Extract the search results
             console.log('pagina', i)
             const searchProducts = await page.evaluate(() => {
                 let products = [];
-                document.querySelectorAll('#app-web > main > div.shop-area > div > div > div.shop-container > div.shop-container > div > div').forEach(product => {
-                    let title = product.querySelector('div.product-content > h4 > a').innerText
-
+                document.querySelectorAll('#content_principal > div >div.col-md-4').forEach(product => {
+             
                     products.push({
-                        title: title,
-                        price: product.querySelector('.product-price>span').innerText,
+                        title: product.querySelector('.product_info > h6 > a').innerText,
+                        price: product.querySelector('.product_price > span.price').innerText,
                     });
                 });
                 return products
             });
 
             listaProductos = [...listaProductos, ...searchProducts]
-            siguiente = siguiente + 1;
+            /* siguiente = siguiente + 1;
             await page.goto(`https://www.impacto.com.pe/catalogo?qsearch=${buscar}&page=${siguiente.toString()}`, {
                 waitUntil: "load"
             });
 
             // Wait for the search results to load
-            await page.waitForSelector('#app-web > main > div.shop-area > div > div > div.shop-container > div.shop-container > div');
+            await page.waitForSelector('#app-web > main > div.shop-area > div > div > div.shop-container > div.shop-container > div'); */
         }
 
         listaProductos = listaProductos.filter(p=>p.title.toLowerCase().includes(producto))
         console.log(listaProductos)
         console.log(listaProductos.length)
 
-        const writableStream = fs.createWriteStream('products_impacto.csv');
+       /*  const writableStream = fs.createWriteStream('products_compu_vision.csv');
 
         csv.write([
             { title: 'Product Title', price: 'Price' },
             ...listaProductos
-        ], { headers: false }).pipe(writableStream);
- */
+        ], { headers: false }).pipe(writableStream); */
+
 
     } catch (error) {
         console.log(error)
