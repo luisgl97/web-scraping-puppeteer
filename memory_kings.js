@@ -10,8 +10,8 @@ import fs from "fs"
         userDataDir: "./tmp",
     });
     const page = await browser.newPage();
-    let producto = 'teclado'
-    producto = producto.trim().toLowerCase()
+    let productoBuscar = 'teclado'
+    let producto = productoBuscar.trim().toLowerCase()
     let buscar = producto.replace(/\s/g, '%20')
     console.log(producto)
     try {

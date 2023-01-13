@@ -6,10 +6,8 @@ export async function scrapeImpacto(page, productoBuscar) {
     
     console.log("TIENDA IMPACTO")
     console.log("parameter Impacto", productoBuscar)
-    let producto = 'teclado'
-    producto = productoBuscar.trim().toLowerCase()
-    let buscar = producto.replace(/\s/g, '%20')
-    console.log(producto)
+    let buscar = productoBuscar.replace(/\s/g, '%20')
+    console.log(productoBuscar)
     try {
         // Navigate to the search page and enter the search term "teclado"
         await page.goto(`https://www.impacto.com.pe/catalogo?qsearch=${buscar}&page=1`, {
@@ -56,20 +54,22 @@ export async function scrapeImpacto(page, productoBuscar) {
             await page.waitForSelector('#app-web > main > div.shop-area > div > div > div.shop-container > div.shop-container > div');
         }
 
-        listaProductos = listaProductos.filter(p => p.title.toLowerCase().includes(producto))
+        listaProductos = listaProductos.filter(p => p.title.toLowerCase().includes(productoBuscar))
+        
        /*  console.log(listaProductos)
         console.log(listaProductos.length) */
 
-        const writableStream = fs.createWriteStream('products_impacto.csv');
+        const writableStream = fs.createWriteStream(`./archivos/products_impacto_${productoBuscar}.csv`);
 
         csv.write([
             { title: 'Product Title', price: 'Price' },
             ...listaProductos
         ], { headers: false }).pipe(writableStream);
 
+        return listaProductos
 
     } catch (error) {
-        console.log(error)
+        console.log('Error en la pagina')
     }
     // Close the browser when the task is complete
    

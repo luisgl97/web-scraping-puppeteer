@@ -6,10 +6,8 @@ export async function scrapeMemorykings(page, productoBuscar) {
     
     console.log("TIENDA MEMORY KINGS")
     console.log("parameter memory kings", productoBuscar)
-    let producto = 'teclado'
-    producto = productoBuscar.trim().toLowerCase()
-    let buscar = producto.replace(/\s/g, '%20')
-    console.log(producto)
+    let buscar = productoBuscar.replace(/\s/g, '%20')
+    console.log(productoBuscar)
     try {
        
         await page.goto(`https://www.memorykings.pe/resultados/${buscar}`, {
@@ -36,17 +34,18 @@ export async function scrapeMemorykings(page, productoBuscar) {
         listaProductos = [...listaProductos, ...searchProducts]
 
 
-        listaProductos = listaProductos.filter(p => p.title.toLowerCase().includes(producto))
+        listaProductos = listaProductos.filter(p => p.title.toLowerCase().includes(productoBuscar))
         /* console.log(listaProductos)
         console.log(listaProductos.length) */
 
-        const writableStream = fs.createWriteStream('products_memory_kings.csv');
+        const writableStream = fs.createWriteStream(`./archivos/products_memory_kings_${productoBuscar}.csv`);
 
         csv.write([
             { title: 'Product Title', price: 'Price' },
             ...listaProductos
         ], { headers: false }).pipe(writableStream);
 
+        return listaProductos;
 
     } catch (error) {
         console.log(error)

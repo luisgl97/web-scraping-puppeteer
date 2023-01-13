@@ -6,10 +6,9 @@ export async function scrapeSercoplus(page, productoBuscar) {
     
     console.log("TIENDA SERCOPLUS")
     console.log("parameter Sercoplus", productoBuscar)
-    var producto = 'teclado'
-    producto = productoBuscar.trim().toLowerCase()
-    let buscar = producto.replace(/\s/g, '+')
-    console.log(producto)
+
+    let buscar = productoBuscar.replace(/\s/g, '+')
+    console.log(productoBuscar)
     try {
         // Navigate to the search page and enter the search term "teclado"
         await page.goto(`https://www.sercoplus.com/busqueda?controller=search&s=${buscar}&page=1`, {
@@ -56,18 +55,21 @@ export async function scrapeSercoplus(page, productoBuscar) {
             await page.waitForSelector('.product-list');
         }
 
-        listaProductos = listaProductos.filter(p => p.title.toLowerCase().includes(producto))
-        /* console.log(listaProductos)
-        console.log(listaProductos.length) */
+        listaProductos = listaProductos.filter(p => p.title.toLowerCase().includes(productoBuscar))
+        console.log(listaProductos)
+        console.log(listaProductos.length) 
 
-        const writableStream = fs.createWriteStream('products_sercoplus.csv');
+        const writableStream = fs.createWriteStream(`./archivos/products_sercoplus_${productoBuscar}.csv`);
 
         csv.write([
             { title: 'Product Title', price: 'Price' },
             ...listaProductos
         ], { headers: false }).pipe(writableStream);
+
+        return listaProductos
     } catch (error) {
         console.log(error)
+        
     }
 
     
